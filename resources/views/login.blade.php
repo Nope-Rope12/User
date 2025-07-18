@@ -29,7 +29,7 @@
             <div class="register">
                 <p>
                     Don't have any account?
-                    <a href="/signup">Create Account</a>
+                    <a href="/signup/">Create Account</a>
                 </p>
             </div>
         </form>

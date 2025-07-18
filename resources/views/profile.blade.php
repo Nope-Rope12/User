@@ -11,7 +11,12 @@
     <div class="profile-container">
         <div class="profile-card">
             <div class="profile-header">
+                @if($data->image)
+                <img src='{{asset($data->image)}}'>
+                @else
                 <i class='bx bxs-user-circle profile-icon'></i>
+                @endif
+                
                 <h2>{{ $data->username }}</h2>
                 <p>ID: {{ $data->id }}</p>
             </div>
@@ -29,7 +34,7 @@
 
             <div class="profile-actions">
                 <a href="#" class="btn">Edit Profile</a>
-                <a href="#" class="btn logout">Logout</a>
+                <a href="/login" class="btn logout">Logout</a>
             </div>
         </div>
     </div>

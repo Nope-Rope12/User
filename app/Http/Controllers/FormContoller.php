@@ -4,31 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class FormContoller extends Controller
 {
     //
+    function loginView() {
+        return view('login');
+    }
+
+    function signupView() {
+        return view('signup');
+    }
+
     function login(Request $request) {
         $request->validate([
             'username'=>'required',
             'password'=>'required',
         ]);
 
-        $data = User::where('username', $request->username)
-                ->where('password', $request->password)
+        $data = User::where('name', $request->username)
                 ->first();
 
-        if ($data) {
-            return view('profile',compact('data'));
-        } else {
-            echo "Invalid credentials";
-        }
+        return redirect()->route('profile');
     }
     
     function signup(Request $request) {
         $request->validate([
             'username'=>'required|string|max:12',
-            'email'=>'required|email|max:30|exists:users,email',
+            'email'=>'required|email|max:30|unique:users,email',
             'password'=>'required|max:30|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
             'confirm_password'=>'required|same:password',
             'phone_no'=>'required', 
@@ -55,5 +59,10 @@ class FormContoller extends Controller
         $data->save();
 
         return redirect()->route('form.login');
+    }
+
+    function profile() {
+        $data = User::where('id',2)->first();
+        return view('profile',compact('data'));
     }
 }
