@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
-class FormContoller extends Controller
+use Illuminate\Support\Facades\Auth;
+class AuthContoller extends Controller
 {
     //
     function loginView() {
@@ -19,14 +19,15 @@ class FormContoller extends Controller
 
     function login(Request $request) {
         $request->validate([
-            'username'=>'required',
+            'email'=>'required',
             'password'=>'required',
         ]);
 
-        $data = User::where('name', $request->username)
-                ->first();
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+             return redirect()->route('profile')->with('success','Login successful');
+        }
 
-        return redirect()->route('profile');
+        return redirect()->route('form.login')->with('error', 'Invalid login credentials');
     }
     
     function signup(Request $request) {
@@ -36,7 +37,7 @@ class FormContoller extends Controller
             'password'=>'required|max:30|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
             'confirm_password'=>'required|same:password',
             'phone_no'=>'required', 
-            'image'=>'required|mimes:png,jpg|max:2048'
+            'image'=>'required|mimes:png,jpg|max:2048',
         ],[
             'username.required'=>'This field is required',
             'password.regex'=>'In the password field you need one (special character, number, uppercase and lowecase character',
@@ -45,7 +46,7 @@ class FormContoller extends Controller
         $data = new User();
         $data->name=$request->username;
         $data->email=$request->email;
-        $data->password=$request->password;
+        $data->password=Hash::make($request->password);
         $data->phone_no=$request->phone_no;
         if($request->hasFile('image')) {
             $image = $request->file('image');
@@ -55,14 +56,21 @@ class FormContoller extends Controller
             $imageurl = 'upload/'.$filename;
             $data->image = $imageurl;
         }
+        //$data->boi=$request->boi;
 
         $data->save();
 
-        return redirect()->route('form.login');
+        return redirect()->route('form.login')->with('success', 'Registration successful! Please log in.');
     }
 
     function profile() {
-        $data = User::where('id',2)->first();
+        $data = Auth::user();
         return view('profile',compact('data'));
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('form.login')->with('success', 'You have been logged out');
     }
 }

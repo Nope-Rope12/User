@@ -103,6 +103,27 @@ body {
   color: white;
 }
 
+.input-box textarea {
+  width: 100%;
+  background-color: transparent;
+  outline: none;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px; /* makes it pill-shaped like inputs */
+  padding: 0 20px; /* horizontal padding */
+  height: 50px; /* same as input height */
+  color: white;
+  resize: none;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.input-box textarea::placeholder {
+  color: white;
+  font-size: 1rem;
+  line-height: 50px; /* vertically center placeholder */
+}
+
 .signup .terms label input {
   margin-right: 6px;
 }
